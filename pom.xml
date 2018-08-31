@@ -77,8 +77,8 @@
                     <url>http://195.201.41.106:8080/manager/text</url>
                     <server>Hetzner</server>
                     <path>/DozorBots</path>
-                    <username>admin</username>
-                    <password>Mdvalubuer22</password>
+                    <username></username>
+                    <password></password>
                 </configuration>
             </plugin>
         </plugins>
