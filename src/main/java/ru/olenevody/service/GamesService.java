@@ -7,7 +7,6 @@ import ru.bulavka.Bots.model.Chat;
 import ru.bulavka.Bots.model.Message;
 import ru.olenevody.dozor.Game;
 import ru.olenevody.dozor.model.CodeInput;
-import ru.olenevody.dozor.model.CodeStatus;
 import ru.olenevody.dozor.model.Codes;
 
 import java.util.HashMap;

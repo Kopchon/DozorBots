@@ -1,14 +1,14 @@
 package ru.olenevody.dozor.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class Codes {
 
     // Сектор, Список кодов
-    private Map<String, List<Code>> codes = new HashMap<>();
+    private Map<String, List<Code>> codes = new TreeMap<>();
 
     private int total;
     private int required;
