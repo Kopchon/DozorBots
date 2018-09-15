@@ -59,7 +59,7 @@ public class Game implements Runnable {
 
     public void startGame() {
         gameStatus = GameStatus.Running;
-        dozorEngine.setGame(this);
+        dozorEngine.setPin(pin);
         new Thread(this).start();
     }
 
@@ -73,6 +73,10 @@ public class Game implements Runnable {
 
     public void stopGame() {
         gameStatus = GameStatus.Stopped;
+    }
+
+    public boolean isRunning() {
+        return gameStatus == GameStatus.Running;
     }
 
     public CodeStatus enterCode(String code) {
@@ -138,6 +142,7 @@ public class Game implements Runnable {
 
         if (level.getNumber() != _level.getNumber()) {
             messenger.sendMessage(chat.getId(), "Выдан новый уровень!");
+            messenger.sendMessage(chat.getId(), _level.toString());
         }
 
         level = _level;

@@ -1,10 +1,24 @@
+import org.jsoup.Jsoup;
+
+import java.io.IOException;
+
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
-        String str = "(Всего - 10 , для прохождения достаточно любых 8 , принято - 2) ";
-        int i = str.indexOf("любых");
-        str.substring(i + 5);
+        String html = Jsoup.connect("http://lite.dzzzr.ru/spb/go/?pin=43269642&q=XPSMFUMW&nomessage=")
+                .ignoreHttpErrors(true)
+                .get()
+                .body()
+                .html();
+        int begin = html.indexOf("<!--levelNumberBegin-->") + "<!--levelNumberBegin-->".length();
+        int end = html.indexOf("<!--levelNumberEnd-->");
+        String num = html.substring(begin, end).trim();
+        try {
+            System.out.println(Integer.parseInt(num));
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
 
     }
 

@@ -1,14 +1,23 @@
 package ru.olenevody.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.bulavka.Bots.model.Location;
+
+import java.util.Properties;
 
 @Component
 public class TelegramMessageParser implements MessageParser {
 
+    @Autowired
+    Properties properties;
+
     @Override
     public boolean isAdminCommand(String text) {
-        return text.trim().toUpperCase().startsWith("/ADMIN");
+        String formattedText = text.trim().toUpperCase();
+        return formattedText.equals(properties.getProperty("telegram.command.me"))
+                || formattedText.equals(properties.getProperty("telegram.command.chat"))
+                || formattedText.equals(properties.getProperty("telegram.command.chat.id"));
     }
 
     @Override
@@ -51,6 +60,6 @@ public class TelegramMessageParser implements MessageParser {
         } else {
             latitude = Double.parseDouble(tmp[3].trim() + "." + tmp[4].trim());
         }
-        return new Location(longitude, latitude);
+        return new Location(latitude, longitude);
     }
 }

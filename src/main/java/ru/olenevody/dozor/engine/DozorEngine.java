@@ -1,7 +1,6 @@
 package ru.olenevody.dozor.engine;
 
 import org.springframework.stereotype.Component;
-import ru.olenevody.dozor.Game;
 import ru.olenevody.dozor.model.CodeStatus;
 import ru.olenevody.dozor.model.Level;
 
@@ -13,7 +12,7 @@ public interface DozorEngine {
     Level getLevel() throws IOException;
     CodeStatus enterCode(String text) throws IOException;
 
-    void setGame(Game game);
-    Game getGame();
+    void setPin(String pin);
+    String getPin();
 
 }

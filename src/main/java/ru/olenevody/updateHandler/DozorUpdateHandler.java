@@ -5,32 +5,38 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.bulavka.Bots.listener.Listener;
 import ru.bulavka.Bots.messenger.Messenger;
-import ru.bulavka.Bots.model.Location;
 import ru.bulavka.Bots.model.Message;
 import ru.bulavka.Bots.model.Update;
 import ru.bulavka.Bots.model.Updates;
 import ru.bulavka.Bots.updateHandler.AbstractUpdateHandler;
-import ru.bulavka.Bots.util.ParseMode;
 import ru.olenevody.dozor.model.CodeInput;
 import ru.olenevody.service.CommandInput;
 import ru.olenevody.service.GamesService;
 import ru.olenevody.service.TelegramMessageParser;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.Set;
+import java.util.Properties;
 
 @Component
 public class DozorUpdateHandler extends AbstractUpdateHandler {
 
-    private final GamesService gamesService;
+    @Autowired
+    private GamesService gamesService;
 
-    private final TelegramMessageParser messageParser;
+    @Autowired
+    private TelegramMessageParser messageParser;
+
+    @Autowired
+    Messenger messenger;
+
+    @Autowired
+    Properties properties;
 
     private Logger logger = Logger.getLogger(DozorUpdateHandler.class);
 
+    public DozorUpdateHandler() {
+    }
 
-    @Autowired
     public DozorUpdateHandler(GamesService gamesService, TelegramMessageParser messageParser) {
         this.gamesService = gamesService;
         this.messageParser = messageParser;
@@ -52,25 +58,30 @@ public class DozorUpdateHandler extends AbstractUpdateHandler {
                 try {
                     switch (messageParser.getMessageType(text)) {
                         case ADMIN_COMMAND:
-                            handleCommand(message, listener);
+                            CommandInput adminCommandInput = handleCommand(message);
+                            if (adminCommandInput != null) {
+                                messenger.sendMessage(message.getChatId(), message.getMessage_id(), adminCommandInput.getResult());
+                            }
                             break;
                         case GAME_COMMAND:
                             CommandInput commandInput = gamesService.handleCommand(message);
-                            sendReplyMessage(message, commandInput.toString());
+                            if (commandInput != null) {
+                                messenger.sendMessage(message.getChatId(), message.getMessage_id(), commandInput.getResult());
+                            }
                             break;
                         case CODE:
                             if (gamesService.gameStarted(message.getChat())) {
                                 CodeInput codeInput = gamesService.enterCode(message);
                                 if (codeInput != null) {
-                                    sendReplyMessage(message, codeInput.getCodeStatus().toString());
+                                    messenger.sendMessage(message.getChatId(), message.getMessage_id(), codeInput.getCodeStatus().toString());
                                     if (codeInput.isDone()) {
-                                        gamesService.getCodes(message.getChat());
+                                        messenger.sendMessage(message.getChatId(), gamesService.getCodes(message.getChat()).toString());
                                     }
                                 }
                             }
                             break;
                         case LOCATION:
-                            sendLocation(messageParser.parseCoordinates(text));
+                            messenger.sendLocation(message.getChatId(), messageParser.parseCoordinates(text));
                             break;
                     }
                 } catch (Exception e) {
@@ -81,31 +92,20 @@ public class DozorUpdateHandler extends AbstractUpdateHandler {
 
     }
 
-    private void sendMessage(String text) throws IOException {
-        Map<Messenger, Set<Long>> chats = getChats();
-        for (Map.Entry<Messenger, Set<Long>> entry : chats.entrySet()) {
-            for (Long chat_id : entry.getValue()) {
-                entry.getKey().sendMessage(chat_id, text, ParseMode.HTML);
-            }
-        }
-    }
+    private CommandInput handleCommand(Message message) throws IOException {
 
-    private void sendReplyMessage(Message message, String text) throws IOException {
-        Map<Messenger, Set<Long>> chats = getChats();
-        for (Map.Entry<Messenger, Set<Long>> entry : chats.entrySet()) {
-            for (Long chat_id : entry.getValue()) {
-                entry.getKey().sendMessage(chat_id, message.getMessage_id(), text, ParseMode.HTML);
-            }
-        }
-    }
+        String text = message.getText().trim().toUpperCase();
 
-    private void sendLocation(Location location) throws IOException {
-        Map<Messenger, Set<Long>> chats = getChats();
-        for (Map.Entry<Messenger, Set<Long>> entry : chats.entrySet()) {
-            for (Long chat_id : entry.getValue()) {
-                entry.getKey().sendLocation(chat_id, location);
-            }
+        if (text.equals(properties.getProperty("telegram.command.me"))) {
+            return new CommandInput(message.getText(), message.getFrom().toString());
+        } else if ( (text.equals(properties.getProperty("telegram.command.chat")))) {
+            return new CommandInput(message.getText(), message.getChat().toString());
+        } else if ( (text.equals(properties.getProperty("telegram.command.chat.id")))) {
+            return new CommandInput(message.getText(), String.valueOf(message.getChatId()));
         }
+
+        return new CommandInput(message.getText(), "Неизвестная команда");
+
     }
 
 }

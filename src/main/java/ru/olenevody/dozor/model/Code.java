@@ -11,6 +11,7 @@ public class Code {
     @Autowired
     Properties properties;
 
+    private int number;
     private boolean done;
     private KO ko;
     private String code;
@@ -18,21 +19,23 @@ public class Code {
     public Code() {
     }
 
-    public Code(boolean done, String strKO) {
-        this(done, KO.getKO(strKO));
+    public Code(int number, String strKO) {
+        this(number, KO.getKO(strKO));
     }
 
-    public Code(boolean done, KO ko) {
-        this(done, ko, "---");
+    public Code(int number, KO ko) {
+        this(number, false, ko, "---");
     }
 
-    public Code(boolean done, KO ko, String code) {
+    public Code(int number, boolean done, KO ko, String code) {
+        this.number = number;
         this.done = done;
         this.ko = ko;
         this.code = code;
     }
 
-    public Code(boolean done, String ko, String code) {
+    public Code(int number, boolean done, String ko, String code) {
+        this.number = number;
         this.done = done;
         this.ko = KO.getKO(ko);
         this.code = code;
@@ -64,7 +67,7 @@ public class Code {
 
     @Override
     public String toString() {
-        return code + "\t(" + ko + ")";
+        return number + "\t" + code + "\t(" + ko + ")";
     }
 
 }

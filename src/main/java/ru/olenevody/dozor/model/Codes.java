@@ -25,7 +25,7 @@ public class Codes {
             List<Code> sectorCodes = new ArrayList<>();
             codes.put(sector, sectorCodes);
             for (Code code : codesMap.get(sector)) {
-                if (code.isDone()) {
+                if (!code.isDone()) {
                     sectorCodes.add(code);
                 }
             }
@@ -104,14 +104,12 @@ public class Codes {
         for (String sector : codes.keySet()) {
             sb.append(sector);
             sb.append("\n");
-            int i = 1;
             for (Code code : codes.get(sector)) {
-                if (code.isDone()) sb.append("<span style=\"color:green\">");
-                sb.append(i++ + " " + code.getCode() + " (" + code.getKo() + ")\n");
-                if (code.isDone()) sb.append("</span>");
+                sb.append(code.toString() + "\n");
             }
         }
 
+        sb.append("\n");
         sb.append("Всего: " + total + "\n");
         sb.append("Достаточно: " + required + "\n");
         sb.append("Принято: " + done + "\n");

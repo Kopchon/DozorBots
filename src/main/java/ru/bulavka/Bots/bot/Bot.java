@@ -2,6 +2,8 @@ package ru.bulavka.Bots.bot;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import ru.bulavka.Bots.listener.Listener;
 import ru.bulavka.Bots.model.Updates;
 import ru.bulavka.Bots.updateHandler.UpdateHandler;
@@ -9,9 +11,13 @@ import ru.bulavka.Bots.updateHandler.UpdateHandler;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
+@Scope("prototype")
 public class Bot implements Runnable {
 
     private String name;
+
+    @Value("${telegram.token}")
     private String token;
 
     @Value("${telegram.delay}")
@@ -22,6 +28,9 @@ public class Bot implements Runnable {
     private List<UpdateHandler> updateHandlers;
 
     private Logger logger = Logger.getLogger(Bot.class);
+
+    public Bot() {
+    }
 
     public Bot(String token) {
         this("NoName", token);
@@ -137,6 +146,7 @@ public class Bot implements Runnable {
                 for (Listener listener : listeners) {
                     Updates updates = listener.getUpdates();
                     for (UpdateHandler handler : updateHandlers) {
+
                         handler.handleUpdates(updates, listener);
                     }
                 }

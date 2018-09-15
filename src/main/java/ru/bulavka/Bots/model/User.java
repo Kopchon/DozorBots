@@ -2,7 +2,6 @@ package ru.bulavka.Bots.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-
 public class User {
 
     @JsonProperty(required = true)

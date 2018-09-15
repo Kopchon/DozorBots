@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- OBJECT MAPPER-->
+    <bean id="mapper" class="ru.bulavka.Bots.util.TelegramObjectMapper"/>
+
+    <!-- TELEGRAM MESSENGER -->
+    <bean id="messenger" class="ru.bulavka.Bots.messenger.SimpleTelegramMessenger">
+        <constructor-arg value="${telegram.token}"/>
+    </bean>
+
+    <!-- DOZOR GAMES SERVICE -->
+    <bean id="gamesService" class="ru.olenevody.service.GamesService"/>
+
+    <!-- TELEGRAM LISTENER -->
+    <bean id="listener" class="ru.bulavka.Bots.listener.SimpleTelegramListener">
+        <constructor-arg value="${telegram.token}"/>
+        <constructor-arg ref="mapper"/>
+    </bean>
+
+    <!-- DOZOR UPDATE HANDLER -->
+    <bean id="dozorUpdateHandler" class="ru.olenevody.updateHandler.DozorUpdateHandler"/>
+
+    <!-- TELEGRAM BOT -->
+    <bean id="bot" class="ru.bulavka.Bots.bot.Bot">
+        <constructor-arg index="0" value="${telegram.name}"/>
+        <constructor-arg index="1" value="${telegram.token}"/>
+        <constructor-arg index="2">
+            <list>
+                <ref bean="listener"/>
+            </list>
+        </constructor-arg>
+        <constructor-arg index="3">
+            <list>
+                <ref bean="dozorUpdateHandler"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <!-- BOT SERVICE -->
+    <bean id="botsService" class="ru.bulavka.Bots.service.BotsService" init-method="startBots">
+        <constructor-arg>
+            <list>
+                <ref bean="bot"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <!-- DOZOR LISTENER-->
+    <bean id="engineDozorListener" class="ru.olenevody.listener.EngineDozorListener" />
+    <bean id="fileDozorListener" class="ru.olenevody.listener.FileDozorListener" />
+
+</beans>

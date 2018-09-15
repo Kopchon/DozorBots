@@ -1,13 +1,10 @@
 package ru.olenevody.dozor.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class Level {
 
-    private int number;
+    private int number = -1;
     private String startTime;
     private String description;
 
@@ -60,29 +57,6 @@ public class Level {
     public void setDescription(String description) {
         this.description = description;
     }
-
-//    public void addCodesSector(String name, List<Code> codes) {
-//        this.codes.put(name, codes);
-//    }
-
-//    public String getCodes(boolean onlyNotDone) {
-//        String tmp = "";
-//        int notDone = 0;
-//        for (Map.Entry<String, List<Code>> entry : codes.entrySet()) {
-//            int count = 0;
-//            tmp += "\n" + entry.getKey() + ":";
-//            for (Code code : entry.getValue()) {
-//                count++;
-//                if (!code.isDone()) notDone++;
-//                if (onlyNotDone && code.isDone())
-//                    continue;
-//
-//                tmp += "\n" + count + "   " + code;
-//            }
-//        }
-//        tmp += "\nВсего осталось: " + notDone;
-//        return tmp;
-//    }
 
     public void setCodes(Codes codes) {
         this.codes = codes;
@@ -185,6 +159,6 @@ public class Level {
         return  "Уровень " + number + "\n"
                 + "Получено в " + startTime + "\n"
                 + (description != null ? "Примечание: " + description + "\n" : "")
-                + "\n" + getCodes().toString();
+                + "\n" + getCodes(false).toString();
     }
 }

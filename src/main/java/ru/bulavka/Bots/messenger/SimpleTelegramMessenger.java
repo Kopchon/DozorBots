@@ -1,16 +1,16 @@
 package ru.bulavka.Bots.messenger;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import ru.bulavka.Bots.model.Location;
 import ru.bulavka.Bots.model.SentMessage;
 import ru.bulavka.Bots.model.User;
 import ru.bulavka.Bots.util.ParseMode;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -49,7 +49,8 @@ public class SimpleTelegramMessenger implements Messenger {
     public SentMessage sendMessage(String chat_id, String text) throws IOException {
         return parseResponseBody(getConnection(Method.sendMessage)
                 .data("chat_id", chat_id)
-                .data("text", text)
+                .data("text", "<pre>" + text + "</pre>")
+                .data("parse_mode", ParseMode.HTML.toString())
                 .execute()
                 .body());
     }
@@ -68,8 +69,9 @@ public class SimpleTelegramMessenger implements Messenger {
     public SentMessage sendMessage(String chat_id, long reply_to_message_id, String text) throws IOException {
         return parseResponseBody(getConnection(Method.sendMessage)
                 .data("chat_id", chat_id)
-                .data("text", text)
+                .data("text", "<pre>" + text + "</pre>")
                 .data("reply_to_message_id", String.valueOf(reply_to_message_id))
+                .data("parse_mode", ParseMode.HTML.toString())
                 .execute()
                 .body());
     }

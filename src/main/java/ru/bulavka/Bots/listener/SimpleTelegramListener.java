@@ -1,12 +1,12 @@
 package ru.bulavka.Bots.listener;
 
-import org.springframework.beans.factory.annotation.Value;
-import ru.bulavka.Bots.model.Updates;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
+import org.springframework.beans.factory.annotation.Value;
+import ru.bulavka.Bots.model.Updates;
 
 import java.io.IOException;
 
@@ -65,8 +65,7 @@ public class SimpleTelegramListener implements Listener {
     @Override
     public Updates getUpdates() throws IOException {
 
-        String json = Jsoup
-                .connect(String.format(url + "%s/getUpdates", token))
+        String json = Jsoup.connect(String.format(url + "%s/getUpdates", token))
                 .method(Connection.Method.GET)
                 .ignoreContentType(true)
                 .data("offset", String.format("%d", offset))

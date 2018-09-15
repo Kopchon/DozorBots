@@ -18,6 +18,8 @@ public class GamesService {
 
     private Map<Chat, Game> games;
 
+
+
     @Autowired
     private Properties properties;
 
@@ -62,13 +64,22 @@ public class GamesService {
         String command = commands[0];
         Game game = games.get(message.getChat());
 
-        CommandInput commandInput = new CommandInput(text, "Неизвестная команда");
+        CommandInput commandInput = null;
         if (text.startsWith(properties.getProperty("dozor.command.start"))) {
+            if (game != null) {
+                commandInput = new CommandInput(properties.getProperty("dozor.command.start"), "Игра уже запущена");
+                return commandInput;
+            }
             if (commands.length < 2) {
                 commandInput = new CommandInput(properties.getProperty("dozor.command.start"), "Требуется указать пин игры");
             } else {
                 addGame(commands[1], message.getChat());
-                commandInput = new CommandInput(properties.getProperty("dozor.command.start"), "Игра запущена, пин = " + commands[1]);
+                // TODO: Сделать нормально
+                String text1 = "Игра запущена, пин = " + commands[1];
+                if (message.getChatId() != -1001042151580L) {
+                    text1 += "\nХалява скоро закончится, следующая игра будет платной.";
+                }
+                commandInput = new CommandInput(properties.getProperty("dozor.command.start"), text1);
             }
         } else if (text.startsWith(properties.getProperty("dozor.command.pause")) && game != null) {
             game.pauseGame();
@@ -78,7 +89,7 @@ public class GamesService {
             commandInput = new CommandInput(properties.getProperty("dozor.command.resume"), "Игра возобновлена");
         } else if (text.startsWith(properties.getProperty("dozor.command.stop")) && game != null) {
             game.stopGame();
-            games.remove(game);
+            games.remove(message.getChat());
             commandInput = new CommandInput(properties.getProperty("dozor.command.stop"), "Игра остановлена");
         } else if (text.startsWith(properties.getProperty("dozor.command.lvl")) && game != null) {
             return new CommandInput(command, game.getLevel().toString());
@@ -90,9 +101,10 @@ public class GamesService {
 
     public CodeInput enterCode(Message message) {
         Game game = games.get(message.getChat());
-        if (game != null) {
+        if (game != null && game.isRunning()) {
             String code = message.getText();
-            return new CodeInput(game.enterCode(code), code, message.getUser());
+            // TODO: Если последний, то надо это как-то помечать и не выводить оставшиеся
+            return new CodeInput(game.enterCode(code), code, message.getFrom());
         }
         return null;
     }
