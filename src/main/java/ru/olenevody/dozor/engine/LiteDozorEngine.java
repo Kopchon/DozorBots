@@ -51,6 +51,8 @@ public class LiteDozorEngine implements DozorEngine {
         level.setNumber(parseNumber(html));
         level.setStartTime(parseStartTime(html));
         level.setDescription(parseDescription(html));
+        level.setHint1(parseHint(1));
+        level.setHint2(parseHint(2));
 
         // TODO: ДОДЕЛАТЬ!
 
@@ -86,6 +88,11 @@ public class LiteDozorEngine implements DozorEngine {
                 .replaceAll("&nbsp;", "")
                 .trim();
 
+    }
+
+    private boolean parseHint(int hintNum) {
+        // TODO: to do
+        return false;
     }
 
     private Codes parseCodes(Element body) {

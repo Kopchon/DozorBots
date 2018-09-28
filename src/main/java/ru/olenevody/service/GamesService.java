@@ -18,8 +18,6 @@ public class GamesService {
 
     private Map<Chat, Game> games;
 
-
-
     @Autowired
     private Properties properties;
 
