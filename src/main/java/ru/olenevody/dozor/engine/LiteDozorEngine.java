@@ -64,6 +64,9 @@ public class LiteDozorEngine implements DozorEngine {
     private int parseNumber(String html) {
         int begin = html.indexOf("<!--levelNumberBegin-->") + "<!--levelNumberBegin-->".length();
         int end = html.indexOf("<!--levelNumberEnd-->");
+        if (end == -1 || begin < end) {
+            return 0;
+        }
         String num = html.substring(begin, end).trim();
         try {
             return Integer.parseInt(num);
@@ -81,6 +84,9 @@ public class LiteDozorEngine implements DozorEngine {
 
         int begin = html.indexOf("<!--taskNotes-->") + "<!--taskNotes-->".length();
         int end = html.indexOf("<!--taskNotesEnd-->");
+        if (end == -1 || begin < end) {
+            return "";
+        }
         return html.substring(begin, end)
                 .replaceAll("(<p>|</p>|<br>)", "\n")
                 .replaceAll("<strong>", "<b>")

@@ -74,9 +74,9 @@ public class GamesService {
                 addGame(commands[1], message.getChat());
                 // TODO: Сделать нормально
                 String text1 = "Игра запущена, пин = " + commands[1];
-                if (message.getChatId() != -1001042151580L) {
-                    text1 += "\nХалява скоро закончится, следующая игра будет платной.";
-                }
+//                if (message.getChatId() != -1001042151580L) {
+//                    text1 += "\nХалява скоро закончится, следующая игра будет платной.";
+//                }
                 commandInput = new CommandInput(properties.getProperty("dozor.command.start"), text1);
             }
         } else if (text.startsWith(properties.getProperty("dozor.command.pause")) && game != null) {

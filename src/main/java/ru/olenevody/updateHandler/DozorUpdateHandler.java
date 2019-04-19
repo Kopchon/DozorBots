@@ -104,7 +104,7 @@ public class DozorUpdateHandler extends AbstractUpdateHandler {
             return new CommandInput(message.getText(), String.valueOf(message.getChatId()));
         }
 
-        return new CommandInput(message.getText(), "Неизвестная команда");
+        return null;
 
     }
 
