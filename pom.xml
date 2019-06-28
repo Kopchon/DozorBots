@@ -88,7 +88,7 @@
                 <artifactId>tomcat7-maven-plugin</artifactId>
                 <version>2.2</version>
                 <configuration>
-                    <url>http://http://116.203.41.235:8080/manager/text</url>
+                    <url>http://116.203.41.235/manager/text</url>
                     <server>Hetzner</server>
                     <path>/DozorBots</path>
                 </configuration>
